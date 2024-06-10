@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sketch-web-app
+  labels:
+    app: sketch-web-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: sketch-web-app
+  template:
+    metadata:
+      labels:
+        app: sketch-web-app
+    spec:
+      containers:
+        - name: sketch-web-app
+          image: samskrutha/sketch-web-app:latest
+          ports:
+            - containerPort: 80
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 10
