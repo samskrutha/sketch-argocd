@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: sketch-web-app
-          image: samskrutha/sketch-web-app:latest-99
+          image: samskrutha/sketch-web-app:latest-100
           ports:
             - containerPort: 80
           readinessProbe:
