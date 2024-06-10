@@ -7,7 +7,7 @@ pipeline {
         ARGOCD_PASSWORD = 'argocd-password'
         AWS_REGION = 'eu-west-1'
         CLUSTER_NAME = 'docusketch-cluster'
-        AWS_CREDENTIALS_ID = 'aws-credentials'
+        AWS_CREDENTIALS_ID = 'aws-cred'
     }
     stages {
         stage('Checkout') {
