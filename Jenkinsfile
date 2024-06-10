@@ -18,12 +18,13 @@ pipeline {
         stage('Configure kubectl') {
             steps {
                 withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: "${AWS_CREDENTIALS_ID}"]]) {
-                    sh 'aws sts get-caller-identity'
+                    sh 'aws eks update-kubeconfig --region ${AWS_REGION} --name ${CLUSTER_NAME}'
                 }
             }
         }
         stage('Apply Manifests') {
             steps {
+                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: "${AWS_CREDENTIALS_ID}"]])
                 sh 'kubectl apply -f apps/sketch-web-app/deployment.yaml'
                 sh 'kubectl apply -f apps/sketch-web-app/service.yaml'
             }
