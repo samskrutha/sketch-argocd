@@ -2,19 +2,14 @@ pipeline {
     agent any
     environment {
         GIT_CREDENTIALS_ID = 'github-token'
-        ARGOCD_SERVER = 'argocd-server-url'
+        ARGOCD_SERVER = 'a13972dab7cea41a69fcc7e2d763cf6b-1608553155.eu-west-1.elb.amazonaws.com'
         ARGOCD_USER = 'argocd-username'
         ARGOCD_PASSWORD = 'argocd-password'
         AWS_REGION = 'eu-west-1'
         CLUSTER_NAME = 'docusketch-cluster'
-        AWS_CREDENTIALS_ID = 'aws-cred'
+        AWS_CREDENTIALS_ID = 'aws-credentials'
     }
     stages {
-        stage('Checkout') {
-            steps {
-                git branch: 'main', url: 'https://github.com/samskrutha/sketch-argocd.git', credentialsId: "${GIT_CREDENTIALS_ID}"
-            }
-        }
         stage('Configure kubectl') {
             steps {
                 withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: "${AWS_CREDENTIALS_ID}"]]) {
