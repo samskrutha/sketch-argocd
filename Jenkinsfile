@@ -24,9 +24,10 @@ pipeline {
         }
         stage('Apply Manifests') {
             steps {
-                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: "${AWS_CREDENTIALS_ID}"]])
-                sh 'kubectl apply -f apps/sketch-web-app/deployment.yaml'
-                sh 'kubectl apply -f apps/sketch-web-app/service.yaml'
+                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: "${AWS_CREDENTIALS_ID}"]]) {
+                    sh 'kubectl apply -f apps/sketch-web-app/deployment.yaml'
+                    sh 'kubectl apply -f apps/sketch-web-app/service.yaml'
+                }
             }
         }
         stage('Sync ArgoCD') {
