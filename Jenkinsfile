@@ -5,11 +5,21 @@ pipeline {
         ARGOCD_SERVER = 'argocd-server-url'
         ARGOCD_USER = 'argocd-username'
         ARGOCD_PASSWORD = 'argocd-password'
+        AWS_REGION = 'eu-west-1'
+        CLUSTER_NAME = 'docusketch-cluster'
+        AWS_CREDENTIALS_ID = 'aws-credentials'
     }
     stages {
         stage('Checkout') {
             steps {
                 git branch: 'main', url: 'https://github.com/samskrutha/sketch-argocd.git', credentialsId: "${GIT_CREDENTIALS_ID}"
+            }
+        }
+        stage('Configure kubectl') {
+            steps {
+                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: "${AWS_CREDENTIALS_ID}"]]) {
+                    sh 'aws eks update-kubeconfig --region ${AWS_REGION} --name ${CLUSTER_NAME}'
+                }
             }
         }
         stage('Apply Manifests') {
