@@ -32,10 +32,12 @@ pipeline {
         }
         stage('Sync ArgoCD') {
             steps {
-                sh """
-                argocd login ${ARGOCD_SERVER} --username ${ARGOCD_USER} --password ${ARGOCD_PASSWORD} --insecure
-                argocd app sync sketch-web-app
-                """
+                withCredentials([usernamePassword(credentialsId: "${ARGOCD_CREDENTIALS_ID}", passwordVariable: 'ARGOCD_PASSWORD', usernameVariable: 'ARGOCD_USER')]) {
+                    sh """
+                    argocd login ${ARGOCD_SERVER} --username ${ARGOCD_USER} --password ${ARGOCD_PASSWORD} --insecure
+                    argocd app sync sketch-web-app
+                    """
+                }
             }
         }
     }
