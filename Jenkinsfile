@@ -2,14 +2,18 @@ pipeline {
     agent any
     environment {
         GIT_CREDENTIALS_ID = 'github-token'
-        ARGOCD_SERVER = 'a13972dab7cea41a69fcc7e2d763cf6b-1608553155.eu-west-1.elb.amazonaws.com'
-        ARGOCD_USER = 'argocd-username'
-        ARGOCD_PASSWORD = 'argocd-password'
+        ARGOCD_SERVER = 'a13972dab7cea41a69fcc7e2d763cf6b-1608553155.eu-west-1.elb.amazonaws.com'  
         AWS_REGION = 'eu-west-1'
         CLUSTER_NAME = 'docusketch-cluster'
         AWS_CREDENTIALS_ID = 'aws-credentials'
+        ARGOCD_CREDENTIALS_ID = 'argocd-credentials' 
     }
     stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/samskrutha/sketch-argocd.git', credentialsId: "${GIT_CREDENTIALS_ID}"
+            }
+        }
         stage('Configure kubectl') {
             steps {
                 withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: "${AWS_CREDENTIALS_ID}"]]) {
@@ -27,7 +31,7 @@ pipeline {
         }
         stage('Sync ArgoCD') {
             steps {
-                script {
+                withCredentials([usernamePassword(credentialsId: "${ARGOCD_CREDENTIALS_ID}", passwordVariable: 'ARGOCD_PASSWORD', usernameVariable: 'ARGOCD_USER')]) {
                     sh """
                     argocd login ${ARGOCD_SERVER} --username ${ARGOCD_USER} --password ${ARGOCD_PASSWORD} --insecure
                     argocd app sync sketch-web-app
